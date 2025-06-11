@@ -6,12 +6,13 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config.php';
 
+// Авторизація
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit;
 }
 
-// Вибір таблиці
+// Якщо таблиця не обрана — показати список таблиць
 if (!isset($_GET['table'])) {
     $res = $conn->query("SHOW TABLES");
     ?>
@@ -40,12 +41,13 @@ if (!isset($_GET['table'])) {
     exit;
 }
 
+// --- Якщо обрана таблиця ---
 $table = $_GET['table'];
 $pkRes = $conn->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
 $pkRow = $pkRes->fetch_assoc();
 $pk = $pkRow['Column_name'];
 
-// Обробка POST-запитів
+// Обробка POST-запитів (видалення)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $table  = $_POST['table']  ?? '';
@@ -59,36 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: admin_dashboard.php?table=" . urlencode($table));
         exit;
     }
-
-    if ($action === 'update') {
-        $fieldsRes = $conn->query("SHOW COLUMNS FROM `$table`");
-        $fields = [];
-        $types = '';
-        $values = [];
-
-        while ($col = $fieldsRes->fetch_assoc()) {
-            if ($col['Extra'] === 'auto_increment') continue;
-            $f = $col['Field'];
-            $fields[] = "`$f` = ?";
-            $types .= 's';
-            $values[] = $_POST[$f] ?? '';
-        }
-
-        $values[] = $id;
-        $types .= 'i';
-
-        $sql = "UPDATE `$table` SET " . implode(',', $fields) . " WHERE `$pk` = ?";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param($types, ...$values);
-        $stmt->execute();
-
-        header("Location: admin_dashboard.php?table=" . urlencode($table) . "&success=1");
-        exit;
-    }
 }
 
-// Перегляд таблиці
+// Отримати записи з таблиці
 $dataRes = $conn->query("SELECT * FROM `$table`");
 ?>
 
@@ -116,10 +91,14 @@ $dataRes = $conn->query("SELECT * FROM `$table`");
 <body>
   <div class="container">
     <?php if (isset($_GET['success'])): ?>
-      <div style="color: green; margin-bottom: 10px;">Дані успішно змінені!</div>
+      <div style="color: green; margin-bottom: 10px;">✅ Дані успішно змінені!</div>
     <?php endif; ?>
 
     <h1>Таблиця: <?= htmlspecialchars($table) ?></h1>
+    
+    <!-- КНОПКА ДОДАТИ НОВИЙ ЗАПИС -->
+    <a class="button" href="add_record.php?table=<?= urlencode($table) ?>" style="margin-bottom: 15px; display:inline-block;">➕ Додати новий запис</a>
+
     <table>
       <tr>
         <?php foreach ($dataRes->fetch_fields() as $c): ?>
@@ -129,14 +108,16 @@ $dataRes = $conn->query("SELECT * FROM `$table`");
       </tr>
       <?php foreach ($dataRes as $row): ?>
         <tr>
-          <?php foreach ($row as $v): ?><td><?= htmlspecialchars($v) ?></td><?php endforeach; ?>
+          <?php foreach ($row as $v): ?>
+            <td><?= htmlspecialchars($v) ?></td>
+          <?php endforeach; ?>
           <td>
-            <a class="button" href="?table=<?= $table ?>&edit=1&id=<?= $row[$pk] ?>">Редагувати</a>
+            <a class="button" href="edit_record.php?table=<?= urlencode($table) ?>&id=<?= urlencode($row[$pk]) ?>">Редагувати</a>
             <form method="post" style="display:inline;" onsubmit="return confirmDelete();">
               <input type="hidden" name="action" value="delete">
-              <input type="hidden" name="table" value="<?= $table ?>">
-              <input type="hidden" name="pk" value="<?= $pk ?>">
-              <input type="hidden" name="id" value="<?= $row[$pk] ?>">
+              <input type="hidden" name="table" value="<?= htmlspecialchars($table) ?>">
+              <input type="hidden" name="pk" value="<?= htmlspecialchars($pk) ?>">
+              <input type="hidden" name="id" value="<?= htmlspecialchars($row[$pk]) ?>">
               <button type="submit">Видалити</button>
             </form>
           </td>
@@ -144,7 +125,7 @@ $dataRes = $conn->query("SELECT * FROM `$table`");
       <?php endforeach; ?>
     </table>
     <br>
-    <a class="button" href="admin_dashboard.php">← Назад до таблиць</a>
+    <a class="button" href="admin_dashboard.php">← Назад до списку таблиць</a>
   </div>
 </body>
 </html>
