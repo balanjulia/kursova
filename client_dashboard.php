@@ -128,7 +128,7 @@ if ($from && $to) {
       <form method="post">
         <input type="hidden" name="update_info" value="1">
         <label>Ім'я:<input type="text" name="Name" value="<?= htmlspecialchars($row['Name']) ?>" required></label>
-        <label>Телефон:<input type="text" name="ContactNumber" value="<?= htmlspecialchars($row['ContactNumber']) ?>" required></label>
+        <label>Телефон:<input type="text" name="ContactNumber" value="<?= htmlspecialchars($row['ContactNumber'] ?? '') ?>" required pattern="^\+?\d+$" title="Лише цифри та +"></label>
         <label>Email:<input type="email" name="Email" value="<?= htmlspecialchars($row['Email']) ?>" required></label>
         <label>Адреса:<input type="text" name="Address" value="<?= htmlspecialchars($row['Address']) ?>" required></label>
         <button type="submit">Зберегти зміни</button>

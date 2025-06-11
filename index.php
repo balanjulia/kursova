@@ -119,6 +119,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: yellow;
             text-align: center;
         }
+        .register-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+        .register-link a {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .register-link a:hover {
+            background: #218838;
+        }
     </style>
 </head>
 <body>
@@ -143,5 +158,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php if ($loginError): ?>
         <p class="error"><?= htmlspecialchars($loginError) ?></p>
     <?php endif; ?>
+
+    <div class="register-link">
+        <a href="register_customer.php">Реєстрація клієнта</a>
+    </div>
 </body>
 </html>
