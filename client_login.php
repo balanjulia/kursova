@@ -1,5 +1,4 @@
 <?php
-// client_login.php — вхід клієнта через Email і пароль
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -12,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Шукаємо клієнта за Email
     $stmt = $conn->prepare("SELECT CustomerID, password FROM customers WHERE Email = ?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($res->num_rows === 1) {
         $row = $res->fetch_assoc();
         if (password_verify($password, $row['password'])) {
-            // Успішний вхід
             $_SESSION['user_id'] = $row['CustomerID'];
             $_SESSION['role']    = 'customer';
             header('Location: client_dashboard.php');

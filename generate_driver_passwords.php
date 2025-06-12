@@ -1,5 +1,4 @@
 <?php
-// generate_driver_passwords.php — генерує випадкові паролі для всіх водіїв та оновлює хеші
 ini_set('display_errors', 1);
 require_once 'config.php';
 

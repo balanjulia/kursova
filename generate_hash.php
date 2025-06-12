@@ -1,12 +1,10 @@
 <?php
-// generate_client_passwords.php - Генерація випадкових паролів для всіх клієнтів та оновлення хешів
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once 'config.php';
 
-// Функція для генерації випадкового пароля
 function generatePassword($length = 10) {
     $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
     $pwd = '';
@@ -18,7 +16,7 @@ function generatePassword($length = 10) {
 
 echo "Генерація паролів для клієнтів...\n";
 
-// Отримуємо список клієнтів
+
 $result = $conn->query("SELECT CustomerID, Email FROM customers");
 if (!$result) {
     die("Помилка: " . $conn->error);
@@ -30,7 +28,6 @@ while ($row = $result->fetch_assoc()) {
     $plain = generatePassword(12); // довжина 12
     $hash  = password_hash($plain, PASSWORD_DEFAULT);
 
-    // Оновлюємо хеш у БД
     $stmt = $conn->prepare("UPDATE customers SET password = ? WHERE CustomerID = ?");
     $stmt->bind_param('si', $hash, $id);
     if ($stmt->execute()) {

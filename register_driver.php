@@ -1,5 +1,5 @@
 <?php
-// register_driver.php — розширена реєстрація водіїв з фото, транспортом і маршрутом
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -10,14 +10,13 @@ require_once 'config.php';
 $errors = [];
 $success = '';
 
-// Директорія для завантажених фото
+
 $uploadDir = __DIR__ . '/uploads/drivers/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Зчитування даних
     $name           = trim($_POST['name'] ?? '');
     $licenseNumber  = trim($_POST['license_number'] ?? '');
     $phone          = trim($_POST['contact_number'] ?? '');
@@ -29,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $startLocation  = trim($_POST['start_location'] ?? '');
     $endLocation    = trim($_POST['end_location'] ?? '');
 
-    // Обробка фото
+
     $photoPath = '';
     if (!empty($_FILES['photo']['name'])) {
         $ext       = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
@@ -48,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Валідація полів
     if (!$name || !$licenseNumber || !$phone || !$email || !$password
         || !$vehicleType || !$licensePlate || !$capacity
         || !$startLocation || !$endLocation) {
@@ -62,10 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($errors)) {
-        // Хешуємо пароль
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
-        // Вставка водія
         $drv = $conn->prepare(
             "INSERT INTO drivers
              (Name, LicenseNumber, ContactNumber, Email, password, Photo, Status)
@@ -83,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $drv->execute();
         $driverId = $conn->insert_id;
 
-        // Вставка транспортного засобу
         $veh = $conn->prepare(
             "INSERT INTO vehicles
              (VehicleType, LicensePlate, Capacity, Status)
@@ -92,8 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $veh->bind_param('ssi', $vehicleType, $licensePlate, $capacity);
         $veh->execute();
         $vehicleId = $conn->insert_id;
-
-        // Вставка маршруту
         $route = $conn->prepare(
             "INSERT INTO routes
              (VehicleID, StartLocation, EndLocation, Distance, EstimatedTime, DriverID)

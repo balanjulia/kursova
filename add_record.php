@@ -18,7 +18,6 @@ if (!isset($_GET['table'])) {
 
 $table = $_GET['table'];
 
-// Отримати всі поля таблиці
 $columnsRes = $conn->query("SHOW COLUMNS FROM `$table`");
 
 $fields = [];
@@ -27,7 +26,6 @@ foreach ($columnsRes as $col) {
     $fields[] = $col['Field'];
 }
 
-// Обробка форми
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $types = str_repeat('s', count($fields));
     $placeholders = implode(',', array_fill(0, count($fields), '?'));

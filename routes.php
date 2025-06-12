@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 
-// Обробка форми додавання маршруту
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_route'])) {
     $vehicleID = $_POST["vehicleID"];
     $startLocation = $_POST["startLocation"];
@@ -18,7 +17,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_route'])) {
     }
 }
 
-// Обробка форми оновлення маршруту
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_route'])) {
     $routeID = $_POST["routeID"];
     $vehicleID = $_POST["vehicleID"];
@@ -36,7 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_route'])) {
     }
 }
 
-// Функція для видалення маршруту
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $sql = "DELETE FROM Routes WHERE RouteID = $id";
@@ -47,7 +44,6 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Отримання даних для випадаючих списків
 $vehicles = $conn->query("SELECT VehicleID, LicensePlate FROM Vehicles");
 ?>
 
@@ -254,7 +250,6 @@ $vehicles = $conn->query("SELECT VehicleID, LicensePlate FROM Vehicles");
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання маршруту -->
     <div id="addRouteModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('addRouteModal').style.display='none'">&times;</span>
@@ -290,7 +285,6 @@ $vehicles = $conn->query("SELECT VehicleID, LicensePlate FROM Vehicles");
         </div>
     </div>
 
-    <!-- Модальне вікно для оновлення маршруту -->
     <div id="updateRouteModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('updateRouteModal').style.display='none'">&times;</span>
@@ -332,7 +326,6 @@ $vehicles = $conn->query("SELECT VehicleID, LicensePlate FROM Vehicles");
             console.log(message);
         }
 
-        // Закриття модального вікна при натисканні за межами вікна
         window.onclick = function(event) {
             var addModal = document.getElementById('addRouteModal');
             var updateModal = document.getElementById('updateRouteModal');

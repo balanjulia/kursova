@@ -1,27 +1,25 @@
 <?php
-// === find_route.php ===
 
-// 1) Увімкнути помилки та кодування
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 header('Content-Type: text/html; charset=utf-8');
 
-// 2) Підключаємо БД
+
 require_once 'config.php';
 
-// 3) Зчитуємо вибір користувача або ставимо дефолт
+
 $origin      = $_GET['origin']      ?? '';
 $destination = $_GET['destination'] ?? '';
 
-// 4) Для побудови списків міст — перший запит
+
 $cities = [];
 $res = $conn->query("SELECT DISTINCT StartLocation FROM routes UNION SELECT DISTINCT EndLocation FROM routes");
 while ($r = $res->fetch_row()) {
     $cities[] = $r[0];
 }
 
-// 5) Якщо користувач натиснув «Пошук», то шукаємо маршрут
+
 $results = [];
 if ($origin && $destination) {
     $o = $conn->real_escape_string($origin);
@@ -59,7 +57,7 @@ if ($origin && $destination) {
 <body>
   <h1>Пошук маршруту</h1>
 
-  <!-- 6) Форма вибору міст -->
+
   <form method="GET">
     <label>
       Звідки:
@@ -82,7 +80,6 @@ if ($origin && $destination) {
     <button type="submit">Пошук</button>
   </form>
 
-  <!-- 7) Вивід результатів -->
   <?php if (isset($error)): ?>
     <p style="color:red;">SQL-помилка: <?=$error?></p>
   <?php elseif ($origin && $destination): ?>

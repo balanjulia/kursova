@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 
-// Обробка форми додавання водія
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_driver'])) {
     $name = $_POST["name"];
     $licenseNumber = $_POST["licenseNumber"];
@@ -17,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_driver'])) {
     }
 }
 
-// Обробка форми оновлення водія
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_driver'])) {
     $driverId = $_POST["driverId"];
     $name = $_POST["name"];
@@ -34,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_driver'])) {
     }
 }
 
-// Функція для видалення водія
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $sql = "DELETE FROM Drivers WHERE DriverID = $id";
@@ -247,7 +244,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання водія -->
     <div id="addDriverModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('addDriverModal').style.display='none'">&times;</span>
@@ -275,7 +271,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Модальне вікно для оновлення водія -->
     <div id="updateDriverModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('updateDriverModal').style.display='none'">&times;</span>
@@ -309,7 +304,6 @@ if (isset($_GET['delete'])) {
             console.log(message);
         }
 
-        // Закриття модального вікна при натисканні за межами вікна
         window.onclick = function(event) {
             var addModal = document.getElementById('addDriverModal');
             var updateModal = document.getElementById('updateDriverModal');

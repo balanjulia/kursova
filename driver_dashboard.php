@@ -1,5 +1,4 @@
 <?php
-// driver_dashboard.php — особистий кабінет водія з переглядом та редагуванням інформації, маршруту та пароля
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,7 +6,6 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config.php';
 
-// Перевірка ролі водія
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'driver') {
     header('Location: driver_login.php');
     exit;
@@ -17,9 +15,7 @@ $driverId    = $_SESSION['user_id'];
 $errors      = [];
 $success_msg = '';
 
-// Обробка POST-запитів
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Оновлення фото
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
         $ext = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
         $newName = "driver_{$driverId}.{$ext}";
@@ -33,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $errors[] = 'Не вдалося завантажити фото.';
         }
     }
-    // Оновлення профілю
     if (isset($_POST['update_info'])) {
         $fields    = [];
         $params    = [];
@@ -59,7 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // Оновлення маршруту
     if (isset($_POST['update_route'])) {
         $start = trim($_POST['start_location'] ?? '');
         $end   = trim($_POST['end_location']   ?? '');
@@ -79,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     }
-    // Зміна пароля
     if (isset($_POST['change_pass'])) {
         $old = $_POST['old_password'] ?? '';
         $new = $_POST['new_password'] ?? '';
@@ -104,13 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Отримуємо дані водія
 $stmt = $conn->prepare("SELECT Name, LicenseNumber, ContactNumber, Email, Status, Photo FROM drivers WHERE DriverID = ?");
 $stmt->bind_param('i', $driverId);
 $stmt->execute();
 $row = $stmt->get_result()->fetch_assoc();
 
-// Отримуємо маршрут водія
 $rstmt = $conn->prepare("SELECT StartLocation, EndLocation, Distance, EstimatedTime FROM routes WHERE DriverID = ? LIMIT 1");
 $rstmt->bind_param('i', $driverId);
 $rstmt->execute();

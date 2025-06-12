@@ -6,13 +6,11 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config.php';
 
-// Перевірка авторизації адміністратора
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit;
 }
 
-// Якщо не вибрано таблицю — показуємо список таблиць
 if (!isset($_GET['table'])) {
     $res = $conn->query("SHOW TABLES");
     ?>
@@ -45,14 +43,11 @@ if (!isset($_GET['table'])) {
     exit;
 }
 
-// Обрана таблиця
 $table = $_GET['table'];
-// Знаходимо первинний ключ
 $pkRes = $conn->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
 $pkRow = $pkRes->fetch_assoc();
 $pk    = $pkRow['Column_name'];
 
-// Обробка дій (видалення)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $tbl    = $_POST['table']  ?? '';
@@ -60,13 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id     = (int)($_POST['id'] ?? 0);
 
     if ($action === 'delete' && $tbl === $table) {
-        // Якщо видаляємо водія — спершу чистимо маршрути
         if ($table === 'drivers') {
             $delRoutes = $conn->prepare("DELETE FROM routes WHERE DriverID = ?");
             $delRoutes->bind_param('i', $id);
             $delRoutes->execute();
         }
-        // Тепер видаляємо запис з обраної таблиці
         $delStmt = $conn->prepare("DELETE FROM `$table` WHERE `$pkFld` = ?");
         $delStmt->bind_param('i', $id);
         $delStmt->execute();
@@ -75,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Отримуємо всі записи
 $dataRes = $conn->query("SELECT * FROM `$table`");
 ?>
 <!DOCTYPE html>

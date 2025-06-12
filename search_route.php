@@ -2,7 +2,6 @@
 session_start();
 require_once 'config.php';
 
-// ваші реальні назви колонок
 $col_from = 'StartLocation';
 $col_to   = 'EndLocation';
 $col_id   = 'RouteID';
@@ -14,7 +13,6 @@ $direct       = [];
 $withTransfer = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $from && $to) {
-    // 1) Пробуємо прямий маршрут
     $sql1 = "
       SELECT * 
       FROM routes 
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $from && $to) {
     $stmt->close();
 
     if (empty($direct)) {
-        // 2) Шукаємо з однією пересадкою
         $sql2 = "
           SELECT
             r1.`$col_id`   AS leg1_id,

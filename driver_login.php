@@ -1,5 +1,4 @@
 <?php
-// driver_login.php — вхід для водіїв за Email і паролем
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -12,7 +11,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
 
-    // Шукаємо водія за Email
     $stmt = $conn->prepare("SELECT DriverID, password FROM drivers WHERE Email = ?");
     $stmt->bind_param('s', $email);
     $stmt->execute();
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($res && $res->num_rows === 1) {
         $row = $res->fetch_assoc();
         if (password_verify($password, $row['password'])) {
-            // Успішний вхід
             $_SESSION['user_id'] = $row['DriverID'];
             $_SESSION['role']    = 'driver';
             header('Location: driver_dashboard.php');

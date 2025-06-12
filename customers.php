@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 
-// Обробка форми додавання клієнта
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_customer'])) {
     $name = $_POST["name"];
     $contactNumber = $_POST["contactNumber"];
@@ -17,7 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_customer'])) {
     }
 }
 
-// Обробка форми оновлення клієнта
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_customer'])) {
     $customerId = $_POST["customerId"];
     $name = $_POST["name"];
@@ -34,7 +32,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_customer'])) {
     }
 }
 
-// Функція для видалення клієнта
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $sql = "DELETE FROM Customers WHERE CustomerID = $id";
@@ -247,7 +244,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання клієнта -->
     <div id="addCustomerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('addCustomerModal').style.display='none'">&times;</span>
@@ -275,7 +271,6 @@ if (isset($_GET['delete'])) {
         </div>
     </div>
 
-    <!-- Модальне вікно для оновлення клієнта -->
     <div id="updateCustomerModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('updateCustomerModal').style.display='none'">&times;</span>
@@ -309,7 +304,6 @@ if (isset($_GET['delete'])) {
             console.log(message);
         }
 
-        // Закриття модального вікна при натисканні за межами вікна
         window.onclick = function(event) {
             var addModal = document.getElementById('addCustomerModal');
             var updateModal = document.getElementById('updateCustomerModal');

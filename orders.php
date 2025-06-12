@@ -1,7 +1,6 @@
 <?php
 include 'config.php';
 
-// Обробка форми додавання замовлення
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_order'])) {
     $customerID = $_POST["customerID"];
     $vehicleID = $_POST["vehicleID"];
@@ -21,7 +20,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_order'])) {
     }
 }
 
-// Обробка форми оновлення замовлення
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_order'])) {
     $orderID = $_POST["orderID"];
     $customerID = $_POST["customerID"];
@@ -42,7 +40,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update_order'])) {
     }
 }
 
-// Функція для видалення замовлення
 if (isset($_GET['delete'])) {
     $id = $_GET['delete'];
     $sql = "DELETE FROM Orders WHERE OrderID = $id";
@@ -53,7 +50,6 @@ if (isset($_GET['delete'])) {
     }
 }
 
-// Отримання даних для випадаючих списків
 $customers = $conn->query("SELECT CustomerID, Name FROM Customers");
 $vehicles = $conn->query("SELECT VehicleID, LicensePlate FROM Vehicles");
 $drivers = $conn->query("SELECT DriverID, Name FROM Drivers");
@@ -266,7 +262,6 @@ $routes = $conn->query("SELECT RouteID, StartLocation, EndLocation FROM Routes")
         </div>
     </div>
 
-    <!-- Модальне вікно для додавання замовлення -->
     <div id="addOrderModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('addOrderModal').style.display='none'">&times;</span>
@@ -322,7 +317,6 @@ $routes = $conn->query("SELECT RouteID, StartLocation, EndLocation FROM Routes")
         </div>
     </div>
 
-    <!-- Модальне вікно для оновлення замовлення -->
     <div id="updateOrderModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="document.getElementById('updateOrderModal').style.display='none'">&times;</span>
@@ -384,7 +378,6 @@ $routes = $conn->query("SELECT RouteID, StartLocation, EndLocation FROM Routes")
             console.log(message);
         }
 
-        // Закриття модального вікна при натисканні за межами вікна
         window.onclick = function(event) {
             var addModal = document.getElementById('addOrderModal');
             var updateModal = document.getElementById('updateOrderModal');

@@ -1,5 +1,4 @@
 <?php
-// reset_password.php - скидання пароля клієнта або водія за ID
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,7 +6,6 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config.php';
 
-// Перевірка ролі: лише адмін може
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: index.php');
     exit;
@@ -23,11 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $userType = $_POST['user_type'] ?? '';
     $userId   = (int)($_POST['user_id'] ?? 0);
 
-    // Валідація
+
     if (($userType !== 'customer' && $userType !== 'driver') || $userId <= 0) {
         $error = 'Невірні дані.';
     } else {
-        // Генеруємо випадковий пароль
         function generatePassword($length = 10) {
             $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
             $pwd = '';
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $newPlain = generatePassword(12);
         $newHash  = password_hash($newPlain, PASSWORD_DEFAULT);
 
-        // Оновлюємо у потрібній таблиці
         $table = ($userType === 'customer') ? 'customers' : 'drivers';
         $pk    = ($userType === 'customer') ? 'CustomerID' : 'DriverID';
         $stmt  = $conn->prepare("UPDATE `$table` SET password = ? WHERE `$pk` = ?");

@@ -11,7 +11,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-// Перевірка параметрів
 if (!isset($_GET['table'], $_GET['id'])) {
     header('Location: admin_dashboard.php');
     exit;
@@ -20,12 +19,10 @@ if (!isset($_GET['table'], $_GET['id'])) {
 $table = $_GET['table'];
 $id = $_GET['id'];
 
-// Отримання первинного ключа
 $pkRes = $conn->query("SHOW KEYS FROM `$table` WHERE Key_name = 'PRIMARY'");
 $pkRow = $pkRes->fetch_assoc();
 $pk = $pkRow['Column_name'];
 
-// Отримання поточного запису
 $stmt = $conn->prepare("SELECT * FROM `$table` WHERE `$pk` = ?");
 $stmt->bind_param('i', $id);
 $stmt->execute();
@@ -37,7 +34,6 @@ if (!$row) {
     exit;
 }
 
-// Обробка редагування
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fieldsRes = $conn->query("SHOW COLUMNS FROM `$table`");
     $fields = [];

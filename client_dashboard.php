@@ -1,5 +1,4 @@
 <?php
-// client_dashboard.php — особистий кабінет клієнта з редагуванням профілю, пароля та пошуком маршрутів
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -7,7 +6,6 @@ error_reporting(E_ALL);
 session_start();
 require_once 'config.php';
 
-// Перевірка ролі
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     header('Location: client_login.php');
     exit;
@@ -17,7 +15,6 @@ $customerId = $_SESSION['user_id'];
 $errors     = [];
 $success    = '';
 
-// Оновлення профілю
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_info'])) {
     $fields = [];
     $params = [];
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_info'])) {
     }
 }
 
-// Зміна пароля
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_pass'])) {
     $old = $_POST['old_password'] ?? '';
     $new = $_POST['new_password'] ?? '';
@@ -64,19 +60,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['change_pass'])) {
     }
 }
 
-// Отримуємо дані клієнта
 $stmt = $conn->prepare("SELECT Name, ContactNumber, Email, Address FROM customers WHERE CustomerID = ?");
 $stmt->bind_param('i', $customerId);
 $stmt->execute();
 $row = $stmt->get_result()->fetch_assoc();
 
-// Пошук маршрутів (прямі та з однією пересадкою)
 $from   = $_GET['from'] ?? '';
 $to     = $_GET['to']   ?? '';
 $routes = [];
 $error  = '';
 
-// Завантажуємо унікальні міста для списків
 $cities = [];
 $res = $conn->query(
     "SELECT DISTINCT StartLocation AS city FROM routes
@@ -88,7 +81,6 @@ while ($r = $res->fetch_assoc()) {
 }
 
 if ($from && $to) {
-    // 1) Прямі маршрути
     $dirStmt = $conn->prepare(
         "SELECT
            r.StartLocation AS from1,
@@ -118,7 +110,6 @@ if ($from && $to) {
         $error = $dirStmt->error;
     }
 
-    // 2) Маршрути з однією пересадкою
     $transStmt = $conn->prepare(
         "SELECT
            r1.StartLocation AS from1,
@@ -180,7 +171,6 @@ if ($from && $to) {
       <p class="error"><?= htmlspecialchars($e) ?></p>
     <?php endforeach; ?>
 
-    <!-- Блок профілю -->
     <fieldset>
       <legend>Профіль</legend>
       <form method="post">
@@ -193,7 +183,6 @@ if ($from && $to) {
       </form>
     </fieldset>
 
-    <!-- Блок зміни пароля -->
     <fieldset>
       <legend>Змінити пароль</legend>
       <form method="post">
@@ -204,7 +193,6 @@ if ($from && $to) {
       </form>
     </fieldset>
 
-    <!-- Блок пошуку маршрутів -->
     <fieldset>
       <legend>Пошук маршрутів</legend>
       <form method="get" class="search-form">
