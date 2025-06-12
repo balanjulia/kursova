@@ -125,6 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .register-link a {
             display: inline-block;
+            margin: 0 10px;
             padding: 10px 20px;
             background: #28a745;
             color: white;
@@ -161,6 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="register-link">
         <a href="register_customer.php">Реєстрація клієнта</a>
+        <a href="register_driver.php">Реєстрація водія</a>
     </div>
 </body>
 </html>
